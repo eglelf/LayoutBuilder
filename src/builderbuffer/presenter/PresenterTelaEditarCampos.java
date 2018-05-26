@@ -30,16 +30,17 @@ import javax.swing.text.StyleContext;
  *
  * @author eglel
  */
-public class PresenterTelaEditarCampos implements IObserverTransacao{
+public class PresenterTelaEditarCampos implements IObserverTransacao {
 
+    //Model
     private Transacao transacao;
+
     private TelaEditarCampos tela;
     private DefaultStyledDocument document;
     private StyleContext context;
     private Style[] estilos;
 
-    public PresenterTelaEditarCampos(Transacao transacao) {
-        this.transacao = transacao;
+    public PresenterTelaEditarCampos() {
         this.tela = new TelaEditarCampos();
 
         this.tela.getBtnOk().addActionListener(new ActionListener() {
@@ -138,13 +139,12 @@ public class PresenterTelaEditarCampos implements IObserverTransacao{
         estilos[3] = styleBlue;
         estilos[4] = styleGreen;
 
-        renderAllText(this.transacao.getTextoCampos());
-
+        //renderAllText(this.transacao.getTextoCampos());
         this.tela.setLocationRelativeTo(null);
         //this.tela.setVisible(true);
     }
-    
-    public void setVisible(boolean visible){
+
+    public void setVisible(boolean visible) {
         this.tela.setVisible(visible);
     }
 
@@ -266,16 +266,27 @@ public class PresenterTelaEditarCampos implements IObserverTransacao{
     public void gravarDados() {
         try {
             //System.out.println("gravar[" + document.getText(0, document.getLength()) + "]");
-            this.transacao.setTextoCampos(document.getText(0, document.getLength()));
+            if (transacao != null) {
+                this.transacao.setTextoCampos(document.getText(0, document.getLength()));
+            }
         } catch (Exception ex) {
             System.out.println("Erro ao ler dados do document:" + ex.getMessage());
         }
     }
 
+    public void setTransacao(Transacao t) {
+        this.transacao = t;
+        if (this.transacao != null) {
+            this.transacao.addObserver(this);
+        }
+    }
+
     @Override
     public void update() {
-        String txtCampos = this.transacao.getTextoCampos();
-        renderAllText(txtCampos);
+        if (transacao != null) {
+            String txtCampos = this.transacao.getTextoCampos();
+            renderAllText(txtCampos);
+        }
     }
 
 }
@@ -316,7 +327,8 @@ class TextLine {
         this.posFim = posFim;
     }
 
-    //========================================================================
+}
+//========================================================================
 //    public void renderLineWithENTER(TextLine textLine, DefaultStyledDocument document) throws Exception {
 //        String line = textLine.getText();
 //        int posIni = textLine.getPosIni();
@@ -427,7 +439,7 @@ class TextLine {
 //        }
 //    }
 //============================================ KEY EVENT OLD ===============================
-    //                    if (renderTAB) {
+//                    if (renderTAB) {
 //                        int pos = tela.getTxtAreaCampos().getCaretPosition();
 //                        TextLine linha = getTextLineWhereCursorIs(pos, document);
 //                        renderLine(linha, document);
@@ -451,4 +463,4 @@ class TextLine {
 //                        renderLine(linha, document);
 //                        tela.getTxtAreaCampos().setCaretPosition(pos);
 //                    }
-}
+

@@ -5,17 +5,19 @@
  */
 package builderbuffer.presenter;
 
+import builderbuffer.chain.WordKeys;
 import builderbuffer.model.Transacao;
 import builderbuffer.view.CellRenderOcurrs;
 import builderbuffer.view.TelaPrincipalTeste;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableModel;
 import builderbuffer.observer.IObserverTransacao;
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  *
@@ -23,38 +25,45 @@ import builderbuffer.observer.IObserverTransacao;
  */
 public class PresenterTransacao implements IObserverTransacao {
 
-    private TelaPrincipalTeste tela;
-    private DefaultTableModel tm;
-    private CellRenderOcurrs cellRender;
-    private Transacao transacao;
+    //Tela    
+    private TelaPrincipalTeste  tela;
+    private DefaultTableModel   tm;
+    private CellRenderOcurrs    cellRender;
+
+    //Model
     private PresenterTelaEditarCampos presenterTelaEditarCampos;
+    private Transacao                 transacao;
+    
 
     public PresenterTransacao() {
-        this.transacao = new Transacao();        
-        this.presenterTelaEditarCampos = new PresenterTelaEditarCampos(transacao);
-        this.transacao.addObserver(this);
-        this.transacao.addObserver(presenterTelaEditarCampos);
-        
-        
         this.tela = new TelaPrincipalTeste();
-        this.tela.setTitle("Builder Buffer");
+        this.tela.setTitle("Layout Builder");
 
-        this.cellRender = new CellRenderOcurrs(Color.white, Color.lightGray);
+        //Configurar Tabela
+        Color[] cinzas = new Color[3];
+        cinzas[2] = new Color(192, 192, 192);
+        cinzas[1] = new Color(212, 212, 212);
+        cinzas[0] = new Color(232, 232, 232);
+        
+        this.cellRender = new CellRenderOcurrs(Color.white, cinzas);
         Object colunas[] = {"Campo", "Sequência", "Tamanho", "Formato", "Variável"};
         tm = new DefaultTableModel(colunas, 0);
         this.tela.getTblCampos().setDefaultRenderer(Object.class, this.cellRender);
         this.tela.getTblCampos().setModel(tm);
-        this.tela.getTblCampos().getColumnModel().getColumn(0).setMaxWidth(200);
-        this.tela.getTblCampos().getColumnModel().getColumn(1).setMaxWidth(100);
-        this.tela.getTblCampos().getColumnModel().getColumn(2).setMaxWidth(60);
-        this.tela.getTblCampos().getColumnModel().getColumn(3).setMaxWidth(160);
-        this.tela.getTblCampos().getColumnModel().getColumn(4).setMaxWidth(200);
+        //this.tela.getTblCampos().getColumnModel().getColumn(0).setMaxWidth(200);
+        //this.tela.getTblCampos().getColumnModel().getColumn(1).setMaxWidth(100);
+        //this.tela.getTblCampos().getColumnModel().getColumn(2).setMaxWidth(60);
+        //this.tela.getTblCampos().getColumnModel().getColumn(3).setMaxWidth(160);
+        //this.tela.getTblCampos().getColumnModel().getColumn(4).setMaxWidth(200);
 
+        //Configurar Listners
         this.tela.getTblCampos().getDefaultEditor(String.class).addCellEditorListener(new CellEditorListener() {
             @Override
-            public void editingStopped(ChangeEvent e) {
-                String txtCampos = getDadosFromTable();
-                transacao.setTextoCampos(txtCampos);                
+            public void editingStopped(ChangeEvent e) {                
+                if (transacao != null) {
+                    String txtCampos = getDadosFromTable();
+                    transacao.setTextoCampos(txtCampos);
+                }
             }
 
             @Override
@@ -62,19 +71,16 @@ public class PresenterTransacao implements IObserverTransacao {
                 //Do nothing
             }
         });
-       
-        //setDadosTabela(this.transacao.getTextoCampos());
 
+        //setDadosTabela(this.transacao.getTextoCampos());
         this.tela.getBtnEditarCampos().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String txtCampos = getDadosFromTable();
-                transacao.setTextoCampos(txtCampos);
-                if(presenterTelaEditarCampos == null){
-                    
+                if (transacao != null && presenterTelaEditarCampos != null) {
+                    String txtCampos = getDadosFromTable();
+                    transacao.setTextoCampos(txtCampos);
+                    presenterTelaEditarCampos.setVisible(true);
                 }
-                presenterTelaEditarCampos.setVisible(true);
-                
             }
         });
 
@@ -83,41 +89,34 @@ public class PresenterTransacao implements IObserverTransacao {
     }
 
     @Override
-    public void update() {       
-        this.cellRender.setLinhasEmNegrito(this.transacao.getLinhasComWordKey());
-        this.cellRender.setIniOccurs(this.transacao.getInicioOccurs());
-        this.cellRender.setFimOccurs(this.transacao.getFimOccurs());
-        setDadosTabela(this.transacao.getTextoCampos());
+    public void update() {
+        if (transacao != null) {
+            WordKeys wk = WordKeys.getInstance();
+            String textoCampos = transacao.getTextoCampos();
+            
+            ArrayList<Integer> linhasComWK = wk.getIndiceLinhasComWK(textoCampos);
+            Map<Integer, Integer> indicesOccurs = wk.getIndiceOccurs(textoCampos);
+            
+            cellRender.setLinhasComWK(linhasComWK);
+            cellRender.setLinhasInicioFimOccurs(indicesOccurs);
+            setDadosTabela(textoCampos);
+        }
         tela.getTblCampos().updateUI();
     }
-
+    
     public void setDadosTabela(String txtCampos) {
 
-        ArrayList<String> linhas = new ArrayList<>();
-        String linha = "";
-        for (int i = 0; i < txtCampos.length(); i++) {
-            if (txtCampos.charAt(i) != '\n') {
-                linha += txtCampos.charAt(i);
-
-                if (i == txtCampos.length() - 1) {
-                    linhas.add(linha);
-                    break;
-                }
-            } else {
-                linhas.add(linha + "\n");
-                linha = "";
-            }
-        }
+        String[] linhas = txtCampos.split("\n");
 
         tm.setNumRows(0);
-        for (int i = 0; i < linhas.size(); i++) {
+        for (int i = 0; i < linhas.length; i++) {
             String campo0;
             String campo1;
             String campo2;
             String campo3;
             String campo4;
 
-            String[] campos = linhas.get(i).split("\t");
+            String[] campos = linhas[i].split("\t");
             if (campos != null && campos.length == 5) {
                 campo0 = campos[0].replace("\n", "");
                 campo1 = campos[1].replace("\n", "");
@@ -154,11 +153,11 @@ public class PresenterTransacao implements IObserverTransacao {
         int qtdRows = tm.getRowCount();
         StringBuilder linhas = new StringBuilder();
         for (int i = 0; i < qtdRows; i++) {
-            String campo = (tm.getValueAt(i, 0) == null) ? "" : ((String) tm.getValueAt(i, 0));
+            String campo     = (tm.getValueAt(i, 0) == null) ? "" : ((String) tm.getValueAt(i, 0));
             String sequencia = (tm.getValueAt(i, 1) == null) ? "" : ((String) tm.getValueAt(i, 1));
-            String tamanho = (tm.getValueAt(i, 2) == null) ? "" : ((String) tm.getValueAt(i, 2));
-            String formato = (tm.getValueAt(i, 3) == null) ? "" : ((String) tm.getValueAt(i, 3));
-            String variavel = (tm.getValueAt(i, 4) == null) ? "" : ((String) tm.getValueAt(i, 4));
+            String tamanho   = (tm.getValueAt(i, 2) == null) ? "" : ((String) tm.getValueAt(i, 2));
+            String formato   = (tm.getValueAt(i, 3) == null) ? "" : ((String) tm.getValueAt(i, 3));
+            String variavel  = (tm.getValueAt(i, 4) == null) ? "" : ((String) tm.getValueAt(i, 4));
 
             if (campo.isEmpty() && sequencia.isEmpty() && tamanho.isEmpty() && formato.isEmpty() && variavel.isEmpty()) {
                 if (i == 0) {
@@ -204,5 +203,16 @@ public class PresenterTransacao implements IObserverTransacao {
             }
         }
         return linhas.toString();
+    }
+
+    public void setTransacao(Transacao transacao) {
+        this.transacao = transacao;
+        if(this.transacao != null){
+            this.transacao.addObserver(this);
+        }
+    }
+
+    public void setPresenterTelaEditarCampos(PresenterTelaEditarCampos presenterEditarCampos) {
+        this.presenterTelaEditarCampos = presenterEditarCampos;
     }
 }

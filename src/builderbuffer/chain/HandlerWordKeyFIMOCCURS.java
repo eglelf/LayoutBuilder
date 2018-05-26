@@ -5,8 +5,6 @@
  */
 package builderbuffer.chain;
 
-import builderbuffer.collection.WordKeys;
-
 /**
  *
  * @author eglel
@@ -15,9 +13,10 @@ public class HandlerWordKeyFIMOCCURS extends AbstractHandlerWordKey{
 
     public HandlerWordKeyFIMOCCURS() {
         super(WordKeys.FIM_OCCURS);
-        padroes.add("<<FIM OCCURS>>");
-        padroes.add("<<FIM OCCURS>>\n");
-        padroes.add("<<FIM OCCURS>>.*?");
+        //padroes.add("<<FIM OCCURS>>");
+        //padroes.add("<<FIM OCCURS>>\n");
+        //padroes.add("<<FIM OCCURS>>.*?");
+        this.padroes.add("<<\\s*FIM OCCURS\\s*>>.*?");
     }
 
     @Override

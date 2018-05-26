@@ -5,10 +5,6 @@
  */
 package builderbuffer.chain;
 
-import builderbuffer.collection.WordKeys;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  *
  * @author eglel
@@ -17,10 +13,11 @@ public class HandlerWordKeyGRUPO extends AbstractHandlerWordKey {
 
     public HandlerWordKeyGRUPO() {
         super(WordKeys.GRUPO);
-        padroes.add("<<GRUPO>>.*?");
-        padroes.add("<<grupo>>.*?");
-        padroes.add("<<Grupo>>.*?");
-        padroes.add("<<GRUPO>>\n");
+        //padroes.add("<<GRUPO>>.*?");
+        //padroes.add("<<grupo>>.*?");
+        //padroes.add("<<Grupo>>.*?");
+        //padroes.add("<<GRUPO>>\n");
+        padroes.add("<<\\s*(?i)grupo\\s*>>.*?");
     }
 
     @Override

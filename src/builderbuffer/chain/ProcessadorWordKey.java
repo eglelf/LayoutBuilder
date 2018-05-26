@@ -5,7 +5,6 @@
  */
 package builderbuffer.chain;
 
-import builderbuffer.model.Transacao;
 import java.util.ArrayList;
 
 /**

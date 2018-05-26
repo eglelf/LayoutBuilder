@@ -13,6 +13,11 @@ import java.util.regex.Pattern;
  *
  * @author eglel
  */
+
+//* - pode ou não ter
+//+ - pelo menos 1
+//(i?) - ignora maiúsculas de minusculas
+//\d - números 
 public abstract class AbstractHandlerWordKey {
 
     protected String wordKey;

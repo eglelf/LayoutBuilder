@@ -5,7 +5,9 @@
  */
 package builderbuffer;
 
-import builderbuffer.presenter.PresenterPrincipal;
+import builderbuffer.model.Transacao;
+import builderbuffer.presenter.PresenterTelaEditarCampos;
+import builderbuffer.presenter.PresenterTransacao;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
@@ -37,11 +39,28 @@ public class Main {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (UnsupportedLookAndFeelException ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                new PresenterPrincipal();
+                }               
+                
+                //Criar Transacao
+                Transacao                   transacao     = new Transacao();                
+                //Criar Presenters
+                PresenterTransacao          pTransacao    = new PresenterTransacao();
+                PresenterTelaEditarCampos   pEditarCampos = new PresenterTelaEditarCampos();
+                
+                //Setar transacao
+                pTransacao.setTransacao(transacao);
+                pEditarCampos.setTransacao(transacao);
+                
+                //Setar Preseter
+                pTransacao.setPresenterTelaEditarCampos(pEditarCampos);
+                
+                //Atualizar telas para ler a transacao
+                pTransacao.update();
+                pEditarCampos.update();
+                
             }
-        });
-
+        });        
     }
+
 
 }
