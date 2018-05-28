@@ -56,6 +56,7 @@ public class TelaPrincipalTeste extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        tblCampos.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tblCampos);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);

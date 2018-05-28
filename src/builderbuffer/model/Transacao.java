@@ -16,11 +16,13 @@ import builderbuffer.observer.IObserverTransacao;
  */
 public class Transacao implements SubjectTransacao {
 
+    private String nome;
     private String textoCampos;
     private ArrayList<IObserverTransacao> observadores;
     private ArrayList<Integer> linhasQueContemWK;
 
-    public Transacao() {
+    public Transacao(String nome) {
+        this.nome = nome;
         this.observadores       = new ArrayList<>();
         this.linhasQueContemWK  = new ArrayList<>();
         this.textoCampos = "";
@@ -50,21 +52,17 @@ public class Transacao implements SubjectTransacao {
             o.update();
         }
     }
-    
-    /*public ArrayList getLinhasComWordKey() {
-        return this.wordKeys.getLinhasComWordKey();
-    }
-
-    public int getInicioOccurs() {
-        return this.wordKeys.getInicioOccurs();
-    }
-
-    public int getFimOccurs() {
-        return this.wordKeys.getFimOccurs();
-    }*/
 
     public String getTextoCampos() {
         return textoCampos;
     }
 
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+   
 }

@@ -1,0 +1,14 @@
+1) Descrever o Layout na aplicação
+	- Visualização em Texto
+	- Visualização em Tabela
+	- Criar uma ferreamenta/janela para tratar os campos/Strings de determinada coluna, como replace, remover caracter
+	- No modo texto, adicionar uma NOTA informando que os campos são separados por TAB
+	- Não permitir layouts com mesmo nome
+2) Gerar o Clay   - Pois você vai precisar do Clay para gerar o Buffer
+	- Podemos adicionar uma determinada variável para cada campos, quando for gerar o Clay, perguntar quais perterncem ao Clay
+	  que será criar, e quais já existem. Pode ser que alguém pegou algum variável de algum Clay já existente.
+3) Gerar o Buffer
+4) Colocar uma lembrete, ou manual de como usar, quais os comandos, em que coluna as WK devem estar
+
+--Renomear uma transacao
+--Adicionar título as telas do State

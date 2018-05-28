@@ -5,157 +5,148 @@
  */
 package builderbuffer.presenter;
 
-import builderbuffer.collection.Transacoes;
+import builderbuffer.collection.Layout;
+import builderbuffer.factory.FabricaTree;
+import builderbuffer.factory.IFabricaTree;
+import builderbuffer.factory.No;
+import builderbuffer.model.Transacao;
+import builderbuffer.observer.IObserverLayout;
 import builderbuffer.view.TelaPrincipal;
+import com.sun.java.swing.plaf.windows.WindowsTreeUI;
 import java.awt.Component;
-import java.awt.ComponentOrientation;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
-import javax.swing.border.Border;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JTree;
+import javax.swing.UIManager;
+import javax.swing.tree.DefaultTreeCellRenderer;
 
 /**
  *
  * @author eglel
  */
-public class PresenterPrincipal {
+public class PresenterPrincipal implements IObserverLayout {
 
-    private TelaPrincipal tela;
-    private Transacoes transacoes;
-    private JTabbedPane tbGuias;
+    private TelaPrincipal view;
+    private PresenterInputText presenterInputText;
+
+    private JTree arvore;
+    private JPopupMenu popMenuLayout;
+    private JPopupMenu popMenuTransacao;
+    private No noClicado;
 
     public PresenterPrincipal() {
-        this.transacoes = Transacoes.getInstance();
+        Layout.getInstance().setNome("NovoLayout");
+        Layout.getInstance().addObserver(this);
+        this.view = new TelaPrincipal();                
+        criarPopupsMenus();
 
-        this.tela = new TelaPrincipal();
-        this.tela.setTitle("Layout Builder");
-
-        this.tbGuias = new JTabbedPane();
-        //this.tbGuias.setUI(new WindowsTabbedPaneUI());
-        this.tbGuias.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-
-        JTabbedPane tabMais = new JTabbedPane();
-        tabMais.setName("<html><b>+</b></html>");
-        this.tbGuias.add(tabMais);
-        
-        Icon iconPlus = new ImageIcon(getClass().getResource("/builderbuffer/data/plus.png"));
-        
-        JButton btn = new JButton(iconPlus);
-        btn.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-        btn.setPreferredSize(new Dimension(10, 10));
-        btn.setFocusable(false);
-        btn.setContentAreaFilled(false);
-        
-        JPanel panel = new JPanel();
-        panel.add(btn);
-        panel.setOpaque(false);//Transparent
-        
-        this.tbGuias.setTabComponentAt(0, panel);
-
-        btn.addMouseListener(new MouseAdapter() {
+        view.getMenuItemSair().addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) {
-                    addGuiaTransacao();
-                }
+            public void actionPerformed(ActionEvent ae) {
+                System.exit(0);
             }
-
         });
-
-        this.tbGuias.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) {
-                    int index = tbGuias.getSelectedIndex();
-                    if (index >= 0) {
-                        Component comp = tbGuias.getComponentAt(index);
-                        if (comp instanceof JTabbedPane) {
-                            JTabbedPane guia = (JTabbedPane) comp;
-                            if (guia.getName().contains("+")) {
-                                addGuiaTransacao();
-                            }
-                        }
-                    }
-                }
-            }
-
-        });
-
-        tela.getPnlGuias().setLayout(new FlowLayout());
-        //tela.getPnlGuias().setUI(new LayoutBuilderTabbedPaneUI());
-        this.tbGuias.setPreferredSize(new Dimension(800, 450));
-//        this.tbGuias.setBorder(new javax.swing.border.EtchedBorder());
-        tela.getPnlGuias().add(this.tbGuias);
-
-        this.tela.setLocationRelativeTo(null);
-        this.tela.setVisible(true);
+        
+        criarArvore();
+        this.view.setVisible(true);
     }
 
-    public void addGuiaTransacao() {
-        JTabbedPane novaGuia = new JTabbedPane();
-        //novaGuia.setUI(new WindowsTabbedPaneUI());
-        novaGuia.setName("Nova transacao");
-
-        Icon iconClose = new ImageIcon(getClass().getResource("/builderbuffer/data/close1.png"));
-
-        JLabel lbl = new JLabel("Nova transação", SwingConstants.RIGHT);
-        lbl.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-
-        JButton btn = new JButton(iconClose);
-        btn.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-        btn.setPreferredSize(new Dimension(10, 10));
-        btn.setFocusable(false);
-        btn.setContentAreaFilled(false);
-
-        JPanel panel = new JPanel();
-        panel.add(lbl);
-        panel.add(btn);
-        panel.setOpaque(false);//Transparent
-
-        btn.addActionListener(new ActionListener() {
+    public void criarPopupsMenus() {
+        //Menu Layout
+        this.popMenuLayout = new JPopupMenu();
+        JMenuItem opcaoNovaTransacao = new JMenuItem("Nova Transacao");
+        opcaoNovaTransacao.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean achou = false;
-                for (int i = 0; i < tbGuias.getTabCount(); i++) {
-                    Component c = tbGuias.getTabComponentAt(i);
-                    if (c instanceof JPanel) {
-                        JPanel pn = (JPanel) c;
-                        Component[] cs = pn.getComponents();
-                        for (Component cpn : cs) {
-                            if (cpn instanceof JButton) {
-                                if (cpn.equals(btn)) {
-                                    achou = true;
-                                    break;
-                                }
-                            }
-                        }
+                PresenterInputText presenterNT = new PresenterInputText(PresenterInputText.STATE_NOVA_TRANSACAO);
+            }
+        });
+        JMenuItem opcaoRenomearLayout = new JMenuItem("Renomear");
+        opcaoRenomearLayout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PresenterInputText presenterNT = new PresenterInputText(PresenterInputText.STATE_RENOMEAR_LAYOUT);
+            }
+        });
+        popMenuLayout.add(opcaoNovaTransacao);
+        popMenuLayout.add(opcaoRenomearLayout);
 
-                        if (achou) {
-                            tbGuias.setSelectedIndex(i);
-                            tbGuias.removeTabAt(i);
-                            System.out.println("removeu " + i);
-                            break;
+        //Menu Transacao
+        this.popMenuTransacao = new JPopupMenu();
+        JMenuItem opcaoRenomearTransacao = new JMenuItem("Renomear");
+        JMenuItem opcaoExcluirTransacao = new JMenuItem("Excluir");
+        opcaoExcluirTransacao.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (noClicado != null) {
+                    int response = JOptionPane.showConfirmDialog(null, "Deseja Excluir a Transação?");
+                    if (response == JOptionPane.YES_OPTION) {
+                        Layout layout = Layout.getInstance();
+                        String nomeTransacao = (String) noClicado.getUserObject();
+                        Transacao t = layout.getTransacaoByName(nomeTransacao);
+                        if (t != null) {
+                            layout.removeTransacao(t);
+                            update();
                         }
                     }
                 }
             }
         });
+        popMenuTransacao.add(opcaoExcluirTransacao);
+        popMenuTransacao.add(opcaoRenomearTransacao);
+    }
 
-        int indice = this.tbGuias.getSelectedIndex();
-        this.tbGuias.add(novaGuia, indice);
-        this.tbGuias.setTabComponentAt(indice, panel);
-        this.tbGuias.setSelectedIndex(indice);
-        this.tbGuias.updateUI();
+    public void criarArvore() {
+        Layout l = Layout.getInstance();
+        UIManager.put("Tree.expandedIcon", new WindowsTreeUI.ExpandedIcon());
+        UIManager.put("Tree.collapsedIcon", new WindowsTreeUI.CollapsedIcon());
+
+        IFabricaTree fabricaArvore = new FabricaTree();
+        this.arvore = fabricaArvore.criarArvore(l);
+
+        DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) arvore.getCellRenderer();
+        arvore.setRootVisible(true);
+
+        //Coloca árvore na tela
+        view.getjScrollPaneTree().remove(view.getTreeNavigator());
+        view.getjScrollPaneTree().setViewportView(arvore);
+
+        arvore.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent eventoDoMouse) {
+                if (!arvore.isSelectionEmpty()) {
+                    No no = (No) arvore.getLastSelectedPathComponent();
+                    if (eventoDoMouse.getClickCount() >= 2 && eventoDoMouse.getButton() == MouseEvent.BUTTON1) { //Exibir tela
+                        exibirTela(no);
+                    } else if (eventoDoMouse.getClickCount() == 1 && eventoDoMouse.getButton() == MouseEvent.BUTTON3) { //Botão esquerdo, exibir Menu
+                        exibirMenu(no, eventoDoMouse);
+                    }
+                }
+            }
+        });
+    }
+
+    public void exibirTela(No no) {
+        System.out.println("Exibir tela");
+    }
+
+    public void exibirMenu(No no, MouseEvent e) {
+        this.noClicado = no;
+        if (no.getTipo().equals(No.LAYOUT)) {
+            popMenuLayout.show((Component) e.getSource(), e.getX(), e.getY());
+        } else if (no.getTipo().equals(No.TRANSACAO)) {
+            popMenuTransacao.show((Component) e.getSource(), e.getX(), e.getY());
+        }
+    }
+
+    @Override
+    public void update() {
+        criarArvore();
     }
 
 }

@@ -5,8 +5,6 @@
  */
 package builderbuffer.view;
 
-import javax.swing.JTabbedPane;
-
 /**
  *
  * @author eglel
@@ -14,11 +12,10 @@ import javax.swing.JTabbedPane;
 public class TelaPrincipal extends javax.swing.JFrame {
 
     /**
-     * Creates new form TelaPrincipal
+     * Creates new form TelaEditor
      */
     public TelaPrincipal() {
         initComponents();
-        //pnlGuiaTransacoes.setUI(new LayoutBuilderTabbedPaneUI());
     }
 
     /**
@@ -30,47 +27,88 @@ public class TelaPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pnlGuias = new javax.swing.JPanel();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPaneTree = new javax.swing.JScrollPane();
+        treeNavigator = new javax.swing.JTree();
+        jTabbedPaneGuias = new javax.swing.JTabbedPane();
+        jTabbedPaneTabela = new javax.swing.JTabbedPane();
+        jTabbedPaneTexto = new javax.swing.JTabbedPane();
+        jPanel2 = new javax.swing.JPanel();
+        navbar = new javax.swing.JMenuBar();
+        menuArquivo = new javax.swing.JMenu();
+        menuItemSair = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        pnlGuias.setPreferredSize(new java.awt.Dimension(950, 500));
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        javax.swing.GroupLayout pnlGuiasLayout = new javax.swing.GroupLayout(pnlGuias);
-        pnlGuias.setLayout(pnlGuiasLayout);
-        pnlGuiasLayout.setHorizontalGroup(
-            pnlGuiasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 829, Short.MAX_VALUE)
+        jScrollPaneTree.setViewportView(treeNavigator);
+
+        jTabbedPaneGuias.addTab("Modo Tabela", jTabbedPaneTabela);
+        jTabbedPaneGuias.addTab("Modo Texto", jTabbedPaneTexto);
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
-        pnlGuiasLayout.setVerticalGroup(
-            pnlGuiasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 460, Short.MAX_VALUE)
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
         );
 
-        jMenu1.setText("File");
-        jMenuBar1.add(jMenu1);
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPaneTree, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPaneGuias, javax.swing.GroupLayout.DEFAULT_SIZE, 590, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPaneTree, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jTabbedPaneGuias)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        menuArquivo.setText("Arquivo");
 
-        setJMenuBar(jMenuBar1);
+        menuItemSair.setText("Sair");
+        menuArquivo.add(menuItemSair);
+
+        navbar.add(menuArquivo);
+
+        setJMenuBar(navbar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(pnlGuias, javax.swing.GroupLayout.DEFAULT_SIZE, 829, Short.MAX_VALUE)
-                .addGap(0, 20, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(pnlGuias, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -104,8 +142,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -114,17 +150,44 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
     }
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JPanel pnlGuias;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPaneTree;
+    private javax.swing.JTabbedPane jTabbedPaneGuias;
+    private javax.swing.JTabbedPane jTabbedPaneTabela;
+    private javax.swing.JTabbedPane jTabbedPaneTexto;
+    private javax.swing.JMenu menuArquivo;
+    private javax.swing.JMenuItem menuItemSair;
+    private javax.swing.JMenuBar navbar;
+    private javax.swing.JTree treeNavigator;
     // End of variables declaration//GEN-END:variables
 
-    public javax.swing.JPanel getPnlGuias() {
-        return pnlGuias;
+    public javax.swing.JTree getTreeNavigator() {
+        return treeNavigator;
     }
 
+    public javax.swing.JMenuItem getMenuItemSair() {
+        return menuItemSair;
+    }
+
+    public javax.swing.JScrollPane getjScrollPaneTree() {
+        return jScrollPaneTree;
+    }
+
+    public javax.swing.JTabbedPane getjTabbedPaneGuias() {
+        return jTabbedPaneGuias;
+    }
+
+    public javax.swing.JTabbedPane getjTabbedPaneTabela() {
+        return jTabbedPaneTabela;
+    }
+
+    public javax.swing.JTabbedPane getjTabbedPaneTexto() {
+        return jTabbedPaneTexto;
+    }
     
 }
